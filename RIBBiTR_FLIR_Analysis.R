@@ -53,15 +53,15 @@ PA_FLIR_data <- pmap_dfr(sheet_info, function(sheet_name, photo_type) {
   # Select + rename based on photo_type
   if (photo_type == "whole_site") {
     data_clean <- data %>%
-      select(record_id, latitude, longitude, time_wholesite,
-             distance_from_object_m_wholesite,
+      select(record_id, latitude, longitude, time,
+             distance_from_object_m,
              thermal_photo_id_wholesite) %>%
       rename(FLIR_ID = thermal_photo_id_wholesite)
     
   } else if (photo_type == "transect") {
     data_clean <- data %>%
       select(record_id, latitude, longitude, meter_marker,
-             distance_from_object_m_transect,
+             distance_from_object_m, time, direction,
              thermal_photo_id_transect) %>%
       rename(FLIR_ID = thermal_photo_id_transect)
     
@@ -69,7 +69,7 @@ PA_FLIR_data <- pmap_dfr(sheet_info, function(sheet_name, photo_type) {
     data_clean <- data %>%
       select(record_id, latitude, longitude, marker_number,
              microhabitat_type,
-             distance_from_object_m_microhabitat,
+             distance_from_object_m, time,
              thermal_photo_id_microhabitat) %>%
       rename(FLIR_ID = thermal_photo_id_microhabitat)
   }
@@ -80,7 +80,7 @@ PA_FLIR_data <- pmap_dfr(sheet_info, function(sheet_name, photo_type) {
     mutate(photo_type = photo_type)
 })
 
-#join FLIR_ID column with date to get unqie FLIR images
+#join FLIR_ID column with date to get unique FLIR images
 #convert date column to Date format
 PA_FLIR_data <- PA_FLIR_data %>%
   mutate(date = as.Date(date))
@@ -89,38 +89,49 @@ PA_FLIR_data <- PA_FLIR_data %>%
   mutate(FLIR_ID_Date = paste0(FLIR_ID, "_", format(date, "%Y-%m"))) %>%
   mutate(FLIR_ID_Year = paste0(FLIR_ID, "_", format(date, "%Y")))
 
+#add in determined_usage column from PA_FLIR_AK datasheet based on FLIR_ID_Year attribute
+PA_FLIR_data_updated <- PA_FLIR_data %>%
+  left_join(
+    PA_data_AK_updated %>% select(FLIR_ID_Year, 'determined usage'),
+    by = "FLIR_ID_Year"
+  )
 
-#3. Append year to FLIR Image to match datasheet ID----
-# We will use the photos directly from the Ecophysiology folder for this
+#reorganize columns
+PA_FLIR_data_updated <- PA_FLIR_data_updated %>%
+  rename(determined_usage = `determined usage`) %>%
+  select(FLIR_ID_Year, FLIR_ID, site, date, time, survey_time, photo_type, determined_usage,
+    air_temperature_c, humidity, microhabitat_type, distance_from_object_m, meter_marker,
+    marker_number, direction, everything())
+
+write.csv(PA_FLIR_data_updated, "outputs/PA_data.csv", row.names = FALSE)
+
+PA_FLIR_data %>%
+  count(FLIR_ID_Year) %>%
+  filter(n > 1) 
+
+PA_data_AK_updated %>%
+  count(FLIR_ID_Year) %>%
+  filter(n > 1)
+
 
 library(fs)
-library(stringr)
+library(tools)
+library(dplyr)
 
-# Set paths
-source_dir <- "/Users/jennycocciardi/Library/CloudStorage/GoogleDrive-jenny.cocciardi@gmail.com/My Drive/Ecophysiology/Thermal Images_FLIR photos/Pennsylvania" 
-                #folder containing photos
+#check photos in our new 'photos_renamed' folder and compare to the datasheet to see 
+# what we are missing
+
 target_dir <- "~/Google Drive/My Drive/Ohmer Lab/Undergraduate research projects/AKang_FLIR_Microhabitat_Project/FLIR_Images/Pennsylvania/photos_renamed"       
-                #where renamed images god
 
-# List all subfolders, excluding repeat downloads
-exclude_folder <- "/Users/jennycocciardi/Library/CloudStorage/GoogleDrive-jenny.cocciardi@gmail.com/My Drive/Ecophysiology/Thermal Images_FLIR photos/Pennsylvania/REPEAT_DownloadedImages_4Jun2025"
-folders <- dir_ls(source_dir, type = "directory")
-folders <- folders[folders != exclude_folder]        
+# List all filenames (without extensions)
+image_files <- dir_ls(target_dir, regexp = "\\.(jpg|jpeg|png|tif)$", recurse = FALSE)
+image_names <- file_path_sans_ext(path_file(image_files))  # e.g., FLIR0012_2024
 
-# Loop through folders
-for (folder in folders) {
-  folder_name <- path_file(folder)
-  year <- str_extract(folder_name, "\\d{4}")
-  
-  images <- dir_ls(folder, regexp = "\\.(jpg|jpeg|png|tif)$", recurse = FALSE)
-  
-  for (img in images) {
-    img_name <- path_file(img)
-    id <- tools::file_path_sans_ext(img_name)
-    new_name <- paste0(id, "_", year, ".", path_ext(img_name))
-    
-    file_copy(img, path(target_dir, new_name), overwrite = TRUE)
-  }
-}
+# Compare to FLIR_ID_Year column
+missing_images <- PA_FLIR_data %>%
+  filter(!(FLIR_ID_Year %in% image_names))
 
+# View or export missing entries
+print(missing_images)
+write.csv(missing_images, "outputs/missing_FLIR_images.csv", row.names = FALSE)
 
