@@ -110,7 +110,7 @@ print(matched_FLIR_rows)
 
 # Count number of unique year-months per FLIR_ID
 duplicate_FLIRs <- PA_FLIR_data %>%
-  mutate(year_month = format(date, "%Y-%m")) %>%
+  mutate(year_month = format(date, "%Y")) %>%
   distinct(FLIR_ID, year_month) %>%
   count(FLIR_ID) %>%
   filter(n > 1)
@@ -146,7 +146,9 @@ PA_data_AK_updated <- PA_data_AK %>%
 # Now re-do FLIR_ID_Date column
 PA_data_AK_updated <- PA_data_AK_updated %>%
   mutate(FLIRIMAGEID = str_pad(FLIRIMAGEID, width = 4, pad = "0"),
-         FLIR_ID_Date = paste0("FLIR",FLIRIMAGEID, "_", format(surveydate, "%Y-%m")))
+         FLIR_ID_Date = paste0("FLIR",FLIRIMAGEID, "_", format(surveydate, "%Y-%m"))) %>%
+  mutate(FLIRIMAGEID = str_pad(FLIRIMAGEID, width = 4, pad = "0"),
+       FLIR_ID_Year = paste0("FLIR",FLIRIMAGEID, "_", format(surveydate, "%Y")))
 
 missing_FLIR_rows <- PA_FLIR_data %>%
   anti_join(PA_data_AK_updated, by = "FLIR_ID_Date") %>%

@@ -14,7 +14,7 @@ library(stringr)
 source_dir <- "/Users/jennycocciardi/Library/CloudStorage/GoogleDrive-jenny.cocciardi@gmail.com/My Drive/Ecophysiology/Thermal Images_FLIR photos/Pennsylvania" 
 #folder containing photos
 target_dir <- "~/Google Drive/My Drive/Ohmer Lab/Undergraduate research projects/AKang_FLIR_Microhabitat_Project/FLIR_Images/Pennsylvania/photos_renamed"       
-#where renamed images god
+#where renamed images go
 
 # List all subfolders, excluding repeat downloads
 exclude_folder <- "/Users/jennycocciardi/Library/CloudStorage/GoogleDrive-jenny.cocciardi@gmail.com/My Drive/Ecophysiology/Thermal Images_FLIR photos/Pennsylvania/REPEAT_DownloadedImages_4Jun2025"

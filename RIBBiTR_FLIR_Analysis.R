@@ -92,7 +92,7 @@ PA_FLIR_data <- PA_FLIR_data %>%
 #add in determined_usage column from PA_FLIR_AK datasheet based on FLIR_ID_Year attribute
 PA_FLIR_data_updated <- PA_FLIR_data %>%
   left_join(
-    PA_data_AK_updated %>% select(FLIR_ID_Year, 'determined usage'),
+    PA_data_AK_updated %>% select(FLIR_ID_Year, 'determined usage', water),
     by = "FLIR_ID_Year"
   )
 
@@ -118,8 +118,7 @@ library(fs)
 library(tools)
 library(dplyr)
 
-#check photos in our new 'photos_renamed' folder and compare to the datasheet to see 
-# what we are missing
+#check photos in our new 'photos_renamed' folder and compare to the datasheet to see what we are missing
 
 target_dir <- "~/Google Drive/My Drive/Ohmer Lab/Undergraduate research projects/AKang_FLIR_Microhabitat_Project/FLIR_Images/Pennsylvania/photos_renamed"       
 
