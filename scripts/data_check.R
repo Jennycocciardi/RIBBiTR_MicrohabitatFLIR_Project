@@ -6,13 +6,14 @@ library(readxl)
 library(dplyr)
 library(purrr)
 library(janitor)
+library(stringr)
 
 
 #PA 
 Pa_metadata_file_path <- "/Users/jennycocciardi/Library/CloudStorage/GoogleDrive-jenny.cocciardi@gmail.com/My Drive/Ecophysiology/Thermal Images_FLIR photos/Pennsylvania/PA_FLIRMetadata_2023_2024.xlsx"
 sheet_names <- excel_sheets(Pa_metadata_file_path)
 
-#ID the syrvey data sheet in the PA_metadata and clean
+#Identify the survey data sheet in the PA_metadata and clean
 survey_data <- read_excel(Pa_metadata_file_path, sheet = "7_penn_thermalimaging") %>%
   janitor::clean_names() %>%
   select(`record_id`, `latitude`, `longitude`, observer, date, site,
