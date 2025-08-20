@@ -16,6 +16,9 @@ library(dplyr)
 library(stringr)
 library(purrr)
 library(tidyr)
+library(readxl)
+library(fs)
+library(tools)
 
 # ---- Source custom functions ----
 source("scripts/utils_FLIR.R")

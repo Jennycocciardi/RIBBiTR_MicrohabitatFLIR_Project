@@ -10,7 +10,7 @@ library(stringr)
 
 
 #PA 
-Pa_metadata_file_path <- "/Users/jennycocciardi/Library/CloudStorage/GoogleDrive-jenny.cocciardi@gmail.com/My Drive/Ecophysiology/Thermal Images_FLIR photos/Pennsylvania/PA_FLIRMetadata_2023_2024.xlsx"
+Pa_metadata_file_path <- "/Users/jennycocciardi/Library/CloudStorage/GoogleDrive-jenny.cocciardi@gmail.com/My Drive/Ecophysiology/Thermal Images_FLIR photos/Pennsylvania/PA_FLIRMetadata_2023_2025.xlsx"
 sheet_names <- excel_sheets(Pa_metadata_file_path)
 
 #Identify the survey data sheet in the PA_metadata and clean

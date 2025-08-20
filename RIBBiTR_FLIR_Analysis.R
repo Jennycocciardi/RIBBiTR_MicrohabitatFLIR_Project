@@ -27,7 +27,7 @@ source("scripts/setup_FLIR.R")
 #2. load metadata----
 
 #PA
-Pa_metadata_file_path <- "/Users/jennycocciardi/Library/CloudStorage/GoogleDrive-jenny.cocciardi@gmail.com/My Drive/Ecophysiology/Thermal Images_FLIR photos/Pennsylvania/PA_FLIRMetadata_2023_2024.xlsx"
+Pa_metadata_file_path <- "/Users/jennycocciardi/Library/CloudStorage/GoogleDrive-jenny.cocciardi@gmail.com/My Drive/Ecophysiology/Thermal Images_FLIR photos/Pennsylvania/PA_FLIRMetadata_2023_2025.xlsx"
 sheet_names <- excel_sheets(Pa_metadata_file_path)
 
 #Identify the survey data sheet in the PA_metadata and clean
@@ -90,6 +90,58 @@ PA_FLIR_data <- PA_FLIR_data %>%
   mutate(FLIR_ID_Year = paste0(FLIR_ID, "_", format(date, "%Y")))
 
 #add in determined_usage column from PA_FLIR_AK datasheet based on FLIR_ID_Year attribute
+#read in our metadata sheet
+PA_data_AK <- read_excel("~/Google Drive/My Drive/Ohmer Lab/Undergraduate research projects/AKang_FLIR_Microhabitat_Project/FLIR_Images/Pennsylvania/Pennsylvania_metadata (1).xlsx")
+
+#our date column is in 2 different formats...
+library(lubridate)
+
+PA_data_AK <- PA_data_AK %>%
+  mutate(surveydate = case_when(
+    grepl("^\\d{5,}\\.0$", surveydate) ~ as.character(as.Date(as.numeric(surveydate), origin = "1899-12-30")),
+    TRUE ~ as.character(as.Date(surveydate))
+  )) %>%
+  mutate(surveydate = as.Date(surveydate))
+
+PA_data_AK <- PA_data_AK %>%
+  mutate(FLIRIMAGEID = str_pad(FLIRIMAGEID, width = 4, pad = "0"),
+         FLIR_ID_Date = paste0("FLIR",FLIRIMAGEID, "_", format(surveydate, "%Y-%m")))
+
+# Fill in the determined usage column with dates from PA datasheet
+# 1. Find non-duplicated FLIR_IDs in PA_FLIR_data
+non_duplicated_FLIRs <- PA_FLIR_data %>%
+  mutate(year_month = format(date, "%Y-%m")) %>%
+  distinct(FLIR_ID, year_month) %>%
+  count(FLIR_ID) %>%
+  filter(n == 1) %>%
+  pull(FLIR_ID)
+
+# 2. Create FLIR ID column to match
+PA_data_AK <- PA_data_AK %>%
+  mutate(FLIR_ID = paste0("FLIR", str_pad(FLIRIMAGEID, 4, pad = "0")))
+
+# 3. Create a lookup table of FLIR_ID to date (only for non-duplicates)
+date_lookup <- PA_FLIR_data %>%
+  filter(FLIR_ID %in% non_duplicated_FLIRs) %>%
+  select(FLIR_ID, date)
+
+# 4. Join and conditionally update surveydate in PA_data_AK
+PA_data_AK_updated <- PA_data_AK %>%
+  left_join(date_lookup, by = "FLIR_ID") %>%
+  mutate(
+    surveydate = if_else(is.na(surveydate), date, surveydate)) %>%
+  select(-date)  # Drop the temporary date column
+
+# Now re-do FLIR_ID_Date column
+PA_data_AK_updated <- PA_data_AK_updated %>%
+  mutate(FLIRIMAGEID = str_pad(FLIRIMAGEID, width = 4, pad = "0"),
+         FLIR_ID_Date = paste0("FLIR",FLIRIMAGEID, "_", format(surveydate, "%Y-%m"))) %>%
+  mutate(FLIRIMAGEID = str_pad(FLIRIMAGEID, width = 4, pad = "0"),
+         FLIR_ID_Year = paste0("FLIR",FLIRIMAGEID, "_", format(surveydate, "%Y")))
+
+
+# join our determined usage to the metadata sheet
+
 PA_FLIR_data_updated <- PA_FLIR_data %>%
   left_join(
     PA_data_AK_updated %>% select(FLIR_ID_Year, 'determined usage', water),
@@ -99,11 +151,11 @@ PA_FLIR_data_updated <- PA_FLIR_data %>%
 #reorganize columns
 PA_FLIR_data_updated <- PA_FLIR_data_updated %>%
   rename(determined_usage = `determined usage`) %>%
-  select(FLIR_ID_Year, FLIR_ID, site, date, time, survey_time, photo_type, determined_usage,
+  select(FLIR_ID_Year, FLIR_ID, site, date, time, survey_time, photo_type, determined_usage, water,
     air_temperature_c, humidity, microhabitat_type, distance_from_object_m, meter_marker,
     marker_number, direction, everything())
 
-write.csv(PA_FLIR_data_updated, "outputs/PA_data.csv", row.names = FALSE)
+write.csv(PA_FLIR_data_updated, "outputs/PA_data_20-08-2025.csv", row.names = FALSE)
 
 PA_FLIR_data %>%
   count(FLIR_ID_Year) %>%
@@ -113,10 +165,6 @@ PA_data_AK_updated %>%
   count(FLIR_ID_Year) %>%
   filter(n > 1)
 
-
-library(fs)
-library(tools)
-library(dplyr)
 
 #check photos in our new 'photos_renamed' folder and compare to the datasheet to see what we are missing
 
