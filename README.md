@@ -21,8 +21,17 @@ In the future, we we can extract more data from the RIBBiTR database.
 
 This step is to extract temperatures from each photo.
 
-1a. **Run the ```setup_FLIR.R``` script** to setup our environment. This script installs and loads required packages and automatically runs the ```utils_FLIR.R``` script. The ```utils_FLIR.R``` script loads functions needed to extract temperatures from photos. This is needed because the R package ```ThermStats`` has not been kept up to date and so we will write similiar functions to do what the package was doing before...but without using outdated libraries that ThermStats is dependant on.
+1a. **Run the `setup_FLIR.R` script** to setup our environment. 
+
+```source("scripts/setup_FLIR.R")```
+
+This script installs and loads required packages and automatically runs the `utils_FLIR.R` script. The `utils_FLIR.R` script loads functions needed to extract temperatures from photos. This is needed because the R package `ThermStats` has not been kept up to date and so we will write similiar functions to do what the package was doing before...but without using outdated libraries that `ThermStats` is dependant on.
 
 1b. 
+
+
+## Other/extra code
+- *RIBBiTR_FLIR_Analysis.R*: code used to append necessary metadata together to create one dataset we can use for PA study system
+- *rename_reorg_images.R*: script for PA study system to append year to end of image ID to create unique image IDs
 
 
