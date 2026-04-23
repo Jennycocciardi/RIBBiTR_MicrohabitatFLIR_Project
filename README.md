@@ -45,3 +45,7 @@ These will be given to the RIBBiTR database manager for uploading to the RIBBiTR
 - *rename_reorg_images.R*: script for PA study system to append year to end of image ID to create unique image IDs
 
 
+## Step 2: FLIR photo data and environmental data correlation
+
+As an initial analysis, we can use the environmental data recorded at the time of the survey to relate FLIR temp stats to environmental temps.
+
