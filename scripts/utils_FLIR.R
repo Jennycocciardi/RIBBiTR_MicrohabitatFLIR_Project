@@ -127,7 +127,7 @@ get_stats <- function(img, id,
                       img_proj = NULL,             # Not used in this version
                       img_extent = NULL,           # Not used in this version
                       return_vals = c("df", "pstats", "patches"),
-                      sum_stats = c("median", "SHDI", "perc_5", "perc_95")) {
+                      sum_stats = c("mean", "median", "min", "max", "sd", "perc_5", "perc_95", "SHDI")) {
   
   # Flatten temperature matrix and remove NA
   flat_vals <- as.vector(img)
@@ -136,14 +136,26 @@ get_stats <- function(img, id,
   # Initialize list for summary stats
   stats <- list()
   
+  if ("mean" %in% sum_stats)
+    stats$mean <- mean(flat_vals, na.rm = TRUE)
+  
   if ("median" %in% sum_stats)
-    stats$median <- median(flat_vals)
+    stats$median <- median(flat_vals, na.rm = TRUE)
+  
+  if ("min" %in% sum_stats)
+    stats$min <- min(flat_vals, na.rm = TRUE)
+  
+  if ("max" %in% sum_stats)
+    stats$max <- max(flat_vals, na.rm = TRUE)
+  
+  if ("sd" %in% sum_stats)
+    stats$sd <- sd(flat_vals, na.rm = TRUE)
   
   if ("perc_5" %in% sum_stats)
-    stats$perc_5 <- quantile(flat_vals, 0.05)
+    stats$perc_5 <- as.numeric(quantile(flat_vals, 0.05, na.rm = TRUE))
   
   if ("perc_95" %in% sum_stats)
-    stats$perc_95 <- quantile(flat_vals, 0.95)
+    stats$perc_95 <- as.numeric(quantile(flat_vals, 0.95, na.rm = TRUE))
   
   if ("SHDI" %in% sum_stats) {
     rounded <- round(flat_vals, 0)
