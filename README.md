@@ -31,6 +31,7 @@ This script installs and loads required packages and automatically runs the `uti
 *Please note*: Thermstats and these functions require the external software ExifTool. Information and istallation instructions for ExifTool can be found here: http://www.sno.phy.queensu.ca/~phil/exiftool/install.html
 
 **1b. Extract pixel data and compute temperature statistics using the `extract_temp_FLIR.r` script**
+
 The `extract_temp_FLIR.r` script uses the custom functions loaded from the `utils_FLIR.R` script to extract temperature data from each FLIR photo and compute relevant summary statistics. It then merges this data to the processed metadata for each study system and filters out FLIR photos that were determined to be not usable. 
 
 This script produces one datasheet per study system which is exported to the 'data' folder and should be used for further processesing and data analysis:
