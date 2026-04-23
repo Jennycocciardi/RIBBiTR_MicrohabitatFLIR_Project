@@ -40,12 +40,15 @@ This script produces one datasheet per study system which is exported to the 'da
 
 These will be given to the RIBBiTR database manager for uploading to the RIBBiTR database.
 
+
+## Step 2: FLIR photo data and environmental data correlation
+
+As an initial analysis, we can use the environmental data recorded at the time of the survey to relate FLIR temp stats to environmental temps.
+
+
 ## Other/extra code
 - *RIBBiTR_FLIR_Analysis.R*: code used to append necessary metadata together to create one dataset we can use for PA study system
 - *rename_reorg_images.R*: script for PA study system to append year to end of image ID to create unique image IDs
 
 
-## Step 2: FLIR photo data and environmental data correlation
-
-As an initial analysis, we can use the environmental data recorded at the time of the survey to relate FLIR temp stats to environmental temps.
 
