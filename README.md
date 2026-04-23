@@ -26,7 +26,9 @@ This step is to extract temperatures from each photo.
 
 ```source("scripts/setup_FLIR.R")```
 
-This script installs and loads required packages and automatically runs the `utils_FLIR.R` script. The `utils_FLIR.R` script loads functions needed to extract temperatures from photos. This is needed because the R package `ThermStats` has not been kept up to date and so we will write similiar functions to do what the package was doing before...but without using outdated libraries that `ThermStats` is dependant on.
+This script installs and loads required packages and automatically runs the `utils_FLIR.R` script. The `utils_FLIR.R` script loads functions needed to extract and analyze temperatures from photos. This is needed because the R package `ThermStats` has not been kept up to date and so we will write similiar functions to do what the package was doing before...but without using outdated libraries that `ThermStats` is dependant on.
+
+*Please note*: Thermstats and these functions require the external software ExifTool. Information and istallation instructions for ExifTool can be found here: http://www.sno.phy.queensu.ca/~phil/exiftool/install.html
 
 **1b. Extract pixel data and compute temperature statistics using the `extract_temp_FLIR.r` script**
 The `extract_temp_FLIR.r` script uses the custom functions loaded from the `utils_FLIR.R` script to extract temperature data from each FLIR photo and compute relevant summary statistics. It then merges this data to the processed metadata for each study system and filters out FLIR photos that were determined to be not usable. This datasheet is then exported to the 'data' folder and can be used for further processesing and data analysis. 
