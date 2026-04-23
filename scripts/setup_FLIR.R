@@ -1,7 +1,8 @@
 # setup.R
 
 # ---- Install required packages ----
-required_packages <- c("Thermimage", "exiftoolr", "dplyr", "stringr", "purrr")
+required_packages <- c("Thermimage", "exiftoolr", "dplyr", "stringr", "purrr", "tidyr",
+                       "readxl", "fs", "lubridate", "ggplot2")
 
 for (pkg in required_packages) {
   if (!requireNamespace(pkg, quietly = TRUE)) {
@@ -19,6 +20,8 @@ library(tidyr)
 library(readxl)
 library(fs)
 library(tools)
+library(lubridate)
+library(ggplot2)
 
 # ---- Source custom functions ----
 source("scripts/utils_FLIR.R")
