@@ -127,7 +127,7 @@ get_stats <- function(img, id,
                       img_proj = NULL,             # Not used in this version
                       img_extent = NULL,           # Not used in this version
                       return_vals = c("df", "pstats", "patches"),
-                      sum_stats = c("median", "SHDI", "perc_5", "perc_95")) {
+                      sum_stats = c("median", "min", "max", "sd", "perc_5", "perc_95", "SHDI")) {
   
   # Flatten temperature matrix and remove NA
   flat_vals <- as.vector(img)
