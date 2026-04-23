@@ -148,4 +148,3 @@ write.csv(flir_summary_full_clean, "data/PA_flir-temp-data.csv", row.names = FAL
 
 # 1. Set path to where we are keeping FLIR images
 
-
