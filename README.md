@@ -14,6 +14,7 @@ In the future, we we can extract more data from the RIBBiTR database.
 
 ### Information about folders and files within this repository:
 - *scripts*: folder containing all scripts mentioned below
+- *data*: folder containing data used and produced as part of this project
 - *outputs*: folder containing all figures and tables produced through analyses
 - *RIBBiTR_FLIR_Analysis.Rproj*: RStudio project file. This repository is structured as an RStudio Project. Opening the .Rproj file ensures that all scripts run with correct relative paths.
 
